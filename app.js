@@ -42,6 +42,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
@@ -49,7 +50,6 @@ app.use('/project',projectsRouter);
 app.use('/task',tasksRouter);
 app.use('/attachment',attachmentsRouter);
 
-app.use(passport.initialize());
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -66,7 +66,7 @@ app.use(function (err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.json('error');
     console.log(err);
 });
 
