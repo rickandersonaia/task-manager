@@ -30,7 +30,7 @@ usersRouter.route('/')
             res.end();
         }
     })
-; // end usersRouter admin/users/
+; // end
 
 usersRouter.route('/new')
     .options(cors.corsWithOptions, (req, res) => {
@@ -55,9 +55,8 @@ usersRouter.route('/new')
                     email: req.body.email,
                     displayName: req.body.displayName,
                     avatar: req.body.avatar,
-                    isTutor: req.body.isTutor,
-                    isAdmin: req.body.isAdmin,
-                    setsPurchased: req.body.setsPurchased
+                    userRole: req.body.userRole,
+                    isAdmin: req.body.isAdmin
                 }),
                 req.body.password, (err, user) => {
                     if (err) {
@@ -81,27 +80,20 @@ usersRouter.route('/new')
             res.end();
         }
     })
-; // end usersRouter admin/users/new
+; // end usersRouter users/new
 
 usersRouter.route('/:userId')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
-        if (req.user.isAdmin === true) {
-            User.findById(req.params.userId)
-                .then((user) => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(user);
-                }, (err) => next(err))
-                .catch((err) => next(err));
-        } else {
-            res.statusCode = 401;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({success: false, message: 'Not authorized'});
-            res.end();
-        }
+        User.findById(req.params.userId)
+            .then((user) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(user);
+            }, (err) => next(err))
+            .catch((err) => next(err));
     })
     .post(cors.corsWithOptions, (req, res, next) => {
         res.statusCode = 403;
@@ -124,14 +116,14 @@ usersRouter.route('/:userId')
             res.end();
         }
     })
-; // end usersRouter admin/users/:userId
+; // end usersRouter users/:userId
 
 usersRouter.route('/edit/:userId')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
-        if (req.user.isAdmin === true) {
+        if (req.user.isAdmin === true || req.user._id === req.params.userId) {
             User.findById(req.params.userId)
                 .then((user) => {
                     res.statusCode = 200;
@@ -151,7 +143,7 @@ usersRouter.route('/edit/:userId')
         res.end('POST operation not supported on /users/edit/' + req.params.userId);
     })
     .put(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
-        if (req.user.isAdmin === true) {
+        if (req.user.isAdmin === true || req.user._id === req.params.userId) {
             User.findByIdAndUpdate(req.params.userId, {
                 $set: req.body
             }, {new: true})

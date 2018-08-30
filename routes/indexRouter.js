@@ -40,6 +40,9 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
         });
 });
 
+//@todo Create a graceful response to duplicate registration & incomplete information
+
+
 router.options('*', cors.corsWithOptions, (req, res) => {
     res.sendStatus(200);
 })
