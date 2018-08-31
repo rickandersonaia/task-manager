@@ -3,9 +3,10 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('./cors');
 const User = require('../models/user');
+const Organization = require('../models/organization');
 var passport = require('passport');
-var authenticate = require('../authenticate');
-var config = require('./config');
+var authenticate = require('../lib/authenticate');
+var config = require('../config');
 const firstUserSetup = config.firstUserSetup;
 
 
@@ -27,15 +28,12 @@ router.post('/first-admin', cors.corsWithOptions, (req, res, next) => {
         Organization.create(org)
             .then((organization) => {
                 console.log('Main organization created ', organization);
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(organization);
                 User.register(new User({
                         username: req.body.username,
                         email: req.body.email,
                         displayName: req.body.displayName,
                         avatar: req.body.avatar,
-                        userRole: admin,
+                        userRole: "admin",
                         isAdmin: true,
                         organizationId: organization._id
                     }),
@@ -45,10 +43,15 @@ router.post('/first-admin', cors.corsWithOptions, (req, res, next) => {
                             return next(err);
                         }
                         else {
+                            let firstUser = {};
+                            firstUser.username = user.username;
+                            firstUser.displayName = user.displayName;
+                            firstUser.id = user._id;
+                            firstUser.organizationId = user.organizationId;
                             passport.authenticate('local')(req, res, () => {
                                 res.statusCode = 200;
                                 res.setHeader('Content-Type', 'application/json');
-                                res.json({success: true, status: 'Registration Successful!'});
+                                res.json({success: true, status: 'Registration Successful!', organization, firstUser});
                             });
                         }
                     });

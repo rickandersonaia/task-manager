@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var session = require('express-session');
 var logger = require('morgan');
 var passport = require('passport');
-var authenticate = require('./authenticate');
+var authenticate = require('./lib/authenticate');
 var config = require('./config');
 
 const assert = require('assert');

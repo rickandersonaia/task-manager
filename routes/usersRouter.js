@@ -3,9 +3,9 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('./cors');
 const User = require('../models/user');
-const Organization = require('../models/organization')
+const Organization = require('../models/organization');
 const passport = require('passport');
-const authenticate = require('../authenticate');
+const authenticate = require('../lib/authenticate');
 
 const usersRouter = express.Router();
 
@@ -92,7 +92,7 @@ usersRouter.route('/new')
 ; // end usersRouter users/new
 
 
-// Displays or deletes the user by user ID
+// Displays, updates and deletes the user by user ID
 usersRouter.route('/:userId')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
@@ -112,52 +112,6 @@ usersRouter.route('/:userId')
         res.statusCode = 403;
         res.end('POST operation not supported on /users/' + req.params.userId);
     })
-
-    // app admin can delete user by user ID
-    .delete(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
-        if (req.user.isAdmin === true) {
-            User.findByIdAndRemove(req.params.userId)
-                .then((resp) => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(resp);
-                }, (err) => next(err))
-                .catch((err) => next(err));
-        } else {
-            res.statusCode = 401;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({success: false, message: 'Not authorized'});
-            res.end();
-        }
-    })
-; // end usersRouter users/:userId
-
-
-
-usersRouter.route('/edit/:userId')
-    .options(cors.corsWithOptions, (req, res) => {
-        res.sendStatus(200);
-    })
-    .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
-        if (req.user.isAdmin === true || req.user._id === req.params.userId) {
-            User.findById(req.params.userId)
-                .then((user) => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(user);
-                }, (err) => next(err))
-                .catch((err) => next(err));
-        } else {
-            res.statusCode = 401;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({success: false, message: 'Not authorized'});
-            res.end();
-        }
-    })
-    .post(cors.corsWithOptions, (req, res, next) => {
-        res.statusCode = 403;
-        res.end('POST operation not supported on /users/edit/' + req.params.userId);
-    })
     .put(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
         if (req.user.isAdmin === true || req.user._id === req.params.userId) {
             User.findByIdAndUpdate(req.params.userId, {
@@ -176,8 +130,10 @@ usersRouter.route('/edit/:userId')
             res.end();
         }
     })
+
+    // app admin can delete user by user ID
     .delete(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
-        if (req.user.isAdmin === true) {
+        if (req.user.isAdmin === true || req.user.organizationId ) {
             User.findByIdAndRemove(req.params.userId)
                 .then((resp) => {
                     res.statusCode = 200;
@@ -191,8 +147,9 @@ usersRouter.route('/edit/:userId')
             res.json({success: false, message: 'Not authorized'});
             res.end();
         }
-    });
-; // end usersRouter admin/users/edit/:userId
+    })
+; // end usersRouter users/:userId
+
 
 
 module.exports = usersRouter;

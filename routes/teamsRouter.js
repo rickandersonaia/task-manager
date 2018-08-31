@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('./cors');
 const Task = require('../models/task');
 const passport = require('passport');
-const authenticate = require('../authenticate');
+const authenticate = require('../lib/authenticate');
 
 // Get all teams - probably not useful
 // TODO: '/' route, authorization - app admins
