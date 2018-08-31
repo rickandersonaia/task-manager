@@ -13,11 +13,15 @@ const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 
 var indexRouter = require('./routes/indexRouter');
+var organizationsRouter = require('./routes/organizationsRouter');
+var teamsRouter = require('./routes/teamsRouter');
 var usersRouter = require('./routes/usersRouter');
 var projectsRouter = require('./routes/projectsRouter');
 var tasksRouter = require('./routes/tasksRouter');
 var attachmentsRouter = require('./routes/attachmentsRouter');
 
+const Organizations = require('./models/organization');
+const Teams = require('./models/team');
 const Users = require('./models/user');
 const Projects = require('./models/project');
 const Tasks = require('./models/task');
@@ -43,8 +47,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', indexRouter);
+app.use('/v1/organization', organizationsRouter);
+app.use('/v1/team', teamsRouter);
 app.use('/v1/user', usersRouter);
 app.use('/v1/project',projectsRouter);
 app.use('/v1/task',tasksRouter);

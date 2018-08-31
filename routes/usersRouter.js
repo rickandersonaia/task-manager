@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('./cors');
 const User = require('../models/user');
+const Organization = require('../models/organization')
 const passport = require('passport');
 const authenticate = require('../authenticate');
 
@@ -63,7 +64,8 @@ usersRouter.route('/new')
                     displayName: req.body.displayName,
                     avatar: req.body.avatar,
                     userRole: req.body.userRole,
-                    isAdmin: req.body.isAdmin
+                    isAdmin: req.body.isAdmin,
+                    organizationId: req.body.organizationId
                 }),
                 req.body.password, (err, user) => {
                     if (err) {
