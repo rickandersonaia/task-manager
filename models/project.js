@@ -13,6 +13,11 @@ var Project = new Schema({
             required: true,
             unique: false,
         },
+        organizationId: {
+            type: String,
+            required: true,
+            unique: false,
+        },
         teamId: {
             type: String,
             required: false,

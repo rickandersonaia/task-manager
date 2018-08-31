@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-var Team = new Schema({
+var Organization = new Schema({
         name: {
             type: String,
             required: true,
@@ -18,11 +18,6 @@ var Team = new Schema({
             required: false,
             unique: false
         },
-        organizationId: {
-            type: String,
-            required: true,
-            unique: false,
-        },
         members: [{
             memberId: String
         }],
@@ -32,4 +27,4 @@ var Team = new Schema({
     }
 );
 
-module.exports = mongoose.model('Team', Team);
+module.exports = mongoose.model('Organization', Organization);

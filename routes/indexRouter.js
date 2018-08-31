@@ -22,7 +22,8 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
             displayName: req.body.displayName,
             avatar: req.body.avatar,
             userRole: req.body.userRole,
-            isAdmin: req.body.isAdmin
+            isAdmin: req.body.isAdmin,
+            organizationId: req.body.organizationId
         }),
         req.body.password, (err, user) => {
             if (err) {
@@ -40,7 +41,7 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
         });
 });
 
-//@todo Create a graceful response to duplicate registration & incomplete information
+//TODO: Create a graceful response to duplicate registration & incomplete information
 
 
 router.options('*', cors.corsWithOptions, (req, res) => {
@@ -67,8 +68,8 @@ router.post('/login', cors.corsWithOptions, (req, res, next) => {
                 email: user.email,
                 avatar: user.avatar,
                 isAdmin: user.isAdmin,
-                isTutor: user.isTutor,
-                setsPurchased: user.setsPurchased
+                userRole: user.userRole,
+                organizationId: user.organizationId
             };
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');

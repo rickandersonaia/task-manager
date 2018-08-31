@@ -19,10 +19,16 @@ var User = new Schema({
             required: false,
             unique: false
         },
-        userRole: {  // choices are admin, member-admin, member-superuser, member-user
+        organizationId: {
             type: String,
             required: true,
             unique: false
+        },
+        userRole: {  // choices are admin, org-admin, org-superuser, org-user
+            type: String,
+            required: true,
+            unique: false,
+            default: "org-user"
         },
         isAdmin: {
             type: Boolean,
