@@ -45,10 +45,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 
 app.use('/', indexRouter);
-app.use('/user', usersRouter);
-app.use('/project',projectsRouter);
-app.use('/task',tasksRouter);
-app.use('/attachment',attachmentsRouter);
+app.use('/v1/user', usersRouter);
+app.use('/v1/project',projectsRouter);
+app.use('/v1/task',tasksRouter);
+app.use('/v1/attachment',attachmentsRouter);
 
 
 // catch 404 and forward to error handler

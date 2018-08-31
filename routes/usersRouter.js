@@ -10,6 +10,7 @@ const usersRouter = express.Router();
 
 usersRouter.use(bodyParser.json());
 
+// returns all users to the app administrators
 usersRouter.route('/')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
@@ -32,10 +33,14 @@ usersRouter.route('/')
     })
 ; // end
 
+
+// Allows an app admin to manually create a user
 usersRouter.route('/new')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
+
+    // creates the route for the add new user form on the front end
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         if (req.user.isAdmin === true) {
             res.statusCode = 200;
@@ -48,6 +53,8 @@ usersRouter.route('/new')
             res.end();
         }
     })
+
+    // creates the new user - if the app admin
     .post(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
         if (req.user.isAdmin === true) {
             User.register(new User({
@@ -82,10 +89,14 @@ usersRouter.route('/new')
     })
 ; // end usersRouter users/new
 
+
+// Displays or deletes the user by user ID
 usersRouter.route('/:userId')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
     })
+
+    // any registered user can retrieve the user record
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         User.findById(req.params.userId)
             .then((user) => {
@@ -100,6 +111,7 @@ usersRouter.route('/:userId')
         res.end('POST operation not supported on /users/' + req.params.userId);
     })
 
+    // app admin can delete user by user ID
     .delete(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
         if (req.user.isAdmin === true) {
             User.findByIdAndRemove(req.params.userId)
@@ -117,6 +129,8 @@ usersRouter.route('/:userId')
         }
     })
 ; // end usersRouter users/:userId
+
+
 
 usersRouter.route('/edit/:userId')
     .options(cors.corsWithOptions, (req, res) => {

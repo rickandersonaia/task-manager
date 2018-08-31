@@ -19,7 +19,7 @@ var User = new Schema({
             required: false,
             unique: false
         },
-        userRole: {
+        userRole: {  // choices are admin, member-admin, member-superuser, member-user
             type: String,
             required: true,
             unique: false
