@@ -20,6 +20,7 @@ router.get('/', function (req, res, next) {
 router.post('/first-admin', cors.corsWithOptions, (req, res, next) => {
     // This allows for the initial setup of the management organization and the first app admin.  It should only be done
     // once.  Once it is done the facility can be turned off in config.js by setting firstUserSetup to true.
+    // TODO: add the initial admin as a member of the app management organization.
     if (firstUserSetup === false) {
         const org = {
             name: "Application Manager",
