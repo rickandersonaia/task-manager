@@ -13,8 +13,18 @@ var Project = new Schema({
             required: true,
             unique: false,
         },
+        teamId: {
+            type: String,
+            required: false,
+            unique: false,
+        },
         description: {
             type: String,
+            required: false,
+            unique: false,
+        },
+        status: {
+            type: String, // Options are live or template
             required: false,
             unique: false,
         },
