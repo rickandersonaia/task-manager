@@ -4,31 +4,41 @@ const mongoose = require('mongoose');
 const cors = require('./cors');
 const User = require('../models/user');
 const Organization = require('../models/organization');
-var passport = require('passport');
-var authenticate = require('../lib/authenticate');
-var config = require('../config');
+const passport = require('passport');
+const authenticate = require('../lib/authenticate');
+const config = require('../config');
 const firstUserSetup = config.firstUserSetup;
+const orgTools = require('../lib/organizationFunctions');
 
 
 var router = express.Router();
 
-/* GET home page. */
+
+/* GET api root. */
 router.get('/', function (req, res, next) {
-    res.redirect('/home');
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.json({
+        success: true, status: 'You are below the API route!  There is nothing to see here.  ' +
+            'This is not the route you are looking for.  Move along.'
+    });
 });
 
 router.post('/first-admin', cors.corsWithOptions, (req, res, next) => {
     // This allows for the initial setup of the management organization and the first app admin.  It should only be done
     // once.  Once it is done the facility can be turned off in config.js by setting firstUserSetup to true.
-    // TODO: add the initial admin as a member of the app management organization.
+
     if (firstUserSetup === false) {
         const org = {
             name: "Application Manager",
             description: "The application manager is the organization that hosts & controls the app",
         };
-        Organization.create(org)
-            .then((organization) => {
+        Organization.create(org, (err, organization) => {
+            if (err) {
+
+            } else {
                 console.log('Main organization created ', organization);
+                // register takes user.object, password, callback
                 User.register(new User({
                         username: req.body.username,
                         email: req.body.email,
@@ -38,27 +48,25 @@ router.post('/first-admin', cors.corsWithOptions, (req, res, next) => {
                         isAdmin: true,
                         organizationId: organization._id
                     }),
-                    req.body.password, (err, user) => {
+                    req.body.password,
+                    (err, user) => {
                         if (err) {
                             console.log(err);
                             return next(err);
-                        }
-                        else {
+                        } else {
+                            orgTools.addUserIdToOrganization(organization._id, user._id);
                             let firstUser = {};
                             firstUser.username = user.username;
                             firstUser.displayName = user.displayName;
                             firstUser.id = user._id;
                             firstUser.organizationId = user.organizationId;
-                            passport.authenticate('local')(req, res, () => {
-                                res.statusCode = 200;
-                                res.setHeader('Content-Type', 'application/json');
-                                res.json({success: true, status: 'Registration Successful!', organization, firstUser});
-                            });
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json({success: true, status: 'Registration Successful!', organization, firstUser});
                         }
                     });
-            }, (err) => next(err))
-            .catch((err) => next(err));
-
+            }
+        })
     } else {
         res.statusCode = 401;
         res.setHeader('Content-Type', 'application/json');
@@ -85,11 +93,10 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
                 return next(err);
             }
             else {
-                passport.authenticate('local')(req, res, () => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json({success: true, status: 'Registration Successful!'});
-                });
+                orgTools.addUserIdToOrganization(req.body.organizationId, user._id);
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success: true, status: 'Registration Successful!'});
             }
         });
 });
@@ -137,15 +144,13 @@ router.post('/login', cors.corsWithOptions, (req, res, next) => {
 
 
 router.get('/logout', cors.corsWithOptions, (req, res) => {
+    console.log(req);
     if (req.session) {
         req.session.destroy();
         res.clearCookie('session-id');
-        res.redirect('/');
     }
     else {
-        var err = new Error('You are not logged in!');
-        err.status = 403;
-        next(err);
+        res.end('You are not logged in!');
     }
 });
 

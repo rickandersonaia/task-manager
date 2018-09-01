@@ -89,7 +89,7 @@ usersRouter.route('/new')
             res.end();
         }
     })
-; // end usersRouter users/new
+; // end usersRouter v1/users/new
 
 
 // Displays, updates and deletes the user by user ID
@@ -148,7 +148,7 @@ usersRouter.route('/:userId')
             res.end();
         }
     })
-; // end usersRouter users/:userId
+; // end usersRouter v1/users/:userId
 
 
 

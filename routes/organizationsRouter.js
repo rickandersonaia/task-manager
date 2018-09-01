@@ -2,8 +2,10 @@ var express = require('express');
 var organizationsRouter = express.Router();
 const cors = require('./cors');
 const Organization = require('../models/organization');
+const User = require('../models/user');
 const authenticate = require('../lib/authenticate');
-const authorize = require('../lib/authorize')
+const authorize = require('../lib/authorize');
+const orgTools = require('../lib/organizationFunctions');
 
 // Get all organizations
 organizationsRouter.route('/')
@@ -12,18 +14,21 @@ organizationsRouter.route('/')
     })
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         if (req.user.isAdmin === true) {
-            Organization.find(req.query)
-                .then((organizations) => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(organizations);
-                }, (err) => next(err))
-                .catch((err) => next(err));
+            Organization.find(req.query,
+                (err, organization) => {
+                    if (err) {
+                        return handleError(err);
+                    }
+                    else {
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json(organizations);
+                    }
+                })
         } else {
             res.statusCode = 401;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: false, message: 'Not authorized'});
-            res.end();
         }
     })
 ; // end
@@ -45,7 +50,6 @@ organizationsRouter.route('/new')
             res.statusCode = 401;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: false, message: 'Not authorized'});
-            res.end();
         }
     })
 
@@ -53,29 +57,88 @@ organizationsRouter.route('/new')
     .post(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
         if (req.user.isAdmin === true) {
             Organization.create(new Organization({
-                name: req.body.name,
-                description: req.body.description,
-                owner: req.user._id,
-                members: [{memberId: req.user._id}]
-            }))
-
-                .then((organization) => {
-                    console.log('New organization created ', organization);
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'text/html');
-                    res.json(organization);
-                }, (err) => next(err))
-
-                .catch((err) => next(err));
-
+                    name: req.body.name,
+                    description: req.body.description,
+                    owner: req.user._id,
+                    members: [{memberId: req.user._id}]
+                }),
+                (err, organization) => {
+                    if (err) {
+                        return handleError(err);
+                    }
+                    else {
+                        console.log('New organization created ', organization);
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'text/html');
+                        res.json(organization);
+                    }
+                });
         } else {
             res.statusCode = 401;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: false, message: 'Not authorized'});
-            res.end();
         }
     })
-; // end organizationsRouter organization/new
+; // end organizationsRouter v1/organization/new
+
+// Initialize a new organization
+// Allows anyone to create an organization with org-admin user
+organizationsRouter.route('/new/initialize')
+    .options(cors.corsWithOptions, (req, res) => {
+        res.sendStatus(200);
+    })
+
+    // creates the route for the add new organization form on the front end
+    .get(cors.cors, (req, res, next) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/html');
+        res.send('Howdy');
+    })
+
+    // creates a new organization & org-admin user
+    // requires name, description, username, email, displayName
+    .post(cors.corsWithOptions, (req, res, next) => {
+        // first create the organization
+        Organization.create(new Organization({
+            name: req.body.name,
+            description: req.body.description
+        }), (err, organization) => {
+            if (err) {
+                return handleError(err);
+            }
+            else {
+                console.log('New organization created ', organization);
+                // second - create the user
+                // register takes user.object, password, callback
+                User.register(new User({
+                        username: req.body.username,
+                        email: req.body.email,
+                        displayName: req.body.displayName,
+                        avatar: req.body.avatar,
+                        userRole: 'org-admin',
+                        isAdmin: false,
+                        organizationId: organization._id
+                    }),
+                    req.body.password,
+                    (err, user) => {
+                        if (err) {
+                            res.statusCode = 500;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json({err: err});
+                            console.log(req.body.password);
+                        }
+                        else {
+                            // third add the userID to the organization
+                            orgTools.addUserIdToOrganization(organization._id, user._id);
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'text/html');
+                            res.json(user);
+                        }
+                    })
+            }
+        })
+    })
+; // end organizationsRouter v1/organization/new/initial
 
 
 // Displays, updates and deletes the user by user ID
@@ -84,21 +147,23 @@ organizationsRouter.route('/:organizationId')
         res.sendStatus(200);
     })
 
-    // any registered user can retrieve the user record
+    // any organization superuser can view record
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
-        if (authorize.hasOrgAdminPrivilege(req.user, req.params.organizationId)) {
-        Organization.findById(req.params.organizationId)
-            .then((organization) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(organization);
-            }, (err) => next(err))
-            .catch((err) => next(err));
+        if (authorize.hasOrgSuperUserPrivilege(req.user, req.params.organizationId)) {
+            Organization.findById(req.params.organizationId,
+                (err, organization) => {
+                    if (err) {
+                        return handleError(err);
+                    } else {
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json(organization);
+                    }
+                })
         } else {
             res.statusCode = 401;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: false, message: 'Not authorized'});
-            res.end();
         }
     })
 
@@ -111,39 +176,42 @@ organizationsRouter.route('/:organizationId')
         if (authorize.hasOrgAdminPrivilege(req.user, req.params.organizationId)) {
             Organization.findByIdAndUpdate(req.params.organizationId, {
                 $set: req.body
-            }, {new: true})
-                .then((organization) => {
+            }, {new: true}, (err, organization) => {
+                if (err) {
+                    return handleError(err);
+                } else {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
                     res.json(organization);
-                }, (err) => next(err))
-                .catch((err) => next(err));
+                }
+            })
         } else {
             res.statusCode = 401;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: false, message: 'Not authorized'});
-            res.end();
         }
     })
 
     // app admin can delete organization by organization ID
     .delete(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
         if (authorize.hasOrgAdminPrivilege(req.user, req.params.organizationId)) {
-            Organization.findByIdAndRemove(req.params.organizationId)
-                .then((resp) => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(resp);
-                }, (err) => next(err))
-                .catch((err) => next(err));
+            Organization.findByIdAndRemove(req.params.organizationId,
+                (err, organization) => {
+                    if (err) {
+                        return handleError(err);
+                    } else {
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json(organization);
+                    }
+                })
         } else {
             res.statusCode = 401;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: false, message: 'Not authorized'});
-            res.end();
         }
     })
-; // end usersRouter users/:organizationId
+; // end organizationsRouter v1/organization/:organizationId
 
 
 module.exports = organizationsRouter;
