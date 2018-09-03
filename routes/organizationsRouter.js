@@ -7,6 +7,12 @@ const authenticate = require('../lib/authenticate');
 const authorize = require('../lib/authorize');
 const orgTools = require('../lib/organizationFunctions');
 
+// This handles the following routes:
+//     /v1/organization/
+//     /v1/organization/new
+//     /v1/organization/new/initialize
+//     /v1/organization/:organizationId
+
 // Get all organizations
 organizationsRouter.route('/')
     .options(cors.corsWithOptions, (req, res) => {
@@ -22,7 +28,7 @@ organizationsRouter.route('/')
                     else {
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
-                        res.json(organizations);
+                        res.json(organization);
                     }
                 })
         } else {
@@ -141,7 +147,8 @@ organizationsRouter.route('/new/initialize')
 ; // end organizationsRouter v1/organization/new/initial
 
 
-// Displays, updates and deletes the user by user ID
+// Displays, updates and deletes the organization by organization ID
+
 organizationsRouter.route('/:organizationId')
     .options(cors.corsWithOptions, (req, res) => {
         res.sendStatus(200);
@@ -149,22 +156,24 @@ organizationsRouter.route('/:organizationId')
 
     // any organization superuser can view record
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
-        if (authorize.hasOrgSuperUserPrivilege(req.user, req.params.organizationId)) {
-            Organization.findById(req.params.organizationId,
-                (err, organization) => {
-                    if (err) {
-                        return handleError(err);
-                    } else {
-                        res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json(organization);
-                    }
-                })
-        } else {
-            res.statusCode = 401;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({success: false, message: 'Not authorized'});
-        }
+        Organization.findById(req.params.organizationId)
+            .then(organization => {
+                console.log('orgaini: ', organization);
+                if (authorize.hasOrgUserPrivilege(req.user, organization) === true) {
+                    console.log('hasOrgUserPrivilege has returned true');
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(organization);
+                }else{
+                    console.log('hasOrgUserPrivilege has returned false');
+                    res.statusCode = 401;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success: false, message: 'Not authorized'});
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            })
     })
 
     .post(cors.corsWithOptions, (req, res, next) => {
@@ -173,43 +182,59 @@ organizationsRouter.route('/:organizationId')
     })
 
     .put(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
-        if (authorize.hasOrgAdminPrivilege(req.user, req.params.organizationId)) {
-            Organization.findByIdAndUpdate(req.params.organizationId, {
-                $set: req.body
-            }, {new: true}, (err, organization) => {
-                if (err) {
-                    return handleError(err);
-                } else {
-                    res.statusCode = 200;
+        Organization.findById(req.params.organizationId)
+            .then(organization => {
+                if (authorize.hasOrgAdminPrivilege(req.user, organization) === true) {
+                    console.log('hasOrgAdminPrivilege has returned true');
+                    Organization.findByIdAndUpdate(req.params.organizationId, {
+                        $set: req.body
+                    }, {new: true}, (err, organization) => {
+                        if (err) {
+                            return handleError(err);
+                        } else {
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json(organization);
+                        }
+                    })
+                }else{
+                    console.log('hasOrgAdminPrivilege has returned false');
+                    res.statusCode = 401;
                     res.setHeader('Content-Type', 'application/json');
-                    res.json(organization);
+                    res.json({success: false, message: 'Not authorized'});
                 }
             })
-        } else {
-            res.statusCode = 401;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({success: false, message: 'Not authorized'});
-        }
+            .catch((err) => {
+                console.error(err);
+            })
     })
 
     // app admin can delete organization by organization ID
     .delete(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
-        if (authorize.hasOrgAdminPrivilege(req.user, req.params.organizationId)) {
-            Organization.findByIdAndRemove(req.params.organizationId,
-                (err, organization) => {
-                    if (err) {
-                        return handleError(err);
-                    } else {
-                        res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json(organization);
-                    }
-                })
-        } else {
-            res.statusCode = 401;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({success: false, message: 'Not authorized'});
-        }
+        Organization.findById(req.params.organizationId)
+            .then(organization => {
+                if (authorize.hasOrgAdminPrivilege(req.user, organization) === true) {
+                    console.log('hasOrgAdminPrivilege has returned true');
+                    Organization.findByIdAndRemove(req.params.organizationId,
+                        (err, organization) => {
+                            if (err) {
+                                return handleError(err);
+                            } else {
+                                res.statusCode = 200;
+                                res.setHeader('Content-Type', 'application/json');
+                                res.json(organization);
+                            }
+                        })
+                }else{
+                    console.log('hasOrgAdminPrivilege has returned false');
+                    res.statusCode = 401;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success: false, message: 'Not authorized'});
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            })
     })
 ; // end organizationsRouter v1/organization/:organizationId
 

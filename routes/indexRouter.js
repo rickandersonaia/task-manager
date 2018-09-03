@@ -1,6 +1,4 @@
 var express = require('express');
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 const cors = require('./cors');
 const User = require('../models/user');
 const Organization = require('../models/organization');
@@ -12,6 +10,14 @@ const orgTools = require('../lib/organizationFunctions');
 
 
 var router = express.Router();
+// This handles the following routes:
+//     /
+//     /first-admin
+//     /signup
+//     /login
+//     /logout - which really doesn't work in testing without a front end
+//     /checkJWTToken - used internally
+//     /duplicate-check - used internally
 
 
 /* GET api root. */
@@ -106,7 +112,7 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
 
 router.options('*', cors.corsWithOptions, (req, res) => {
     res.sendStatus(200);
-})
+});
 
 router.post('/login', cors.corsWithOptions, (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
