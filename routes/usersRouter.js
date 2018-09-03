@@ -11,6 +11,11 @@ const usersRouter = express.Router();
 
 usersRouter.use(bodyParser.json());
 
+// This handles the following routes:
+//     /v1/user/
+//     /v1/user/new
+//     /v1/user/:userId
+
 // returns all users to the app administrators
 usersRouter.route('/')
     .options(cors.corsWithOptions, (req, res) => {
@@ -75,11 +80,9 @@ usersRouter.route('/new')
                         console.log(req.body.password);
                     }
                     else {
-                        passport.authenticate('local')(req, res, () => {
-                            res.statusCode = 200;
-                            res.setHeader('Content-Type', 'application/json');
-                            res.json({success: true, status: 'Registration Successful!'});
-                        });
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json({success: true, status: 'Registration Successful!'});
                     }
                 });
         } else {
@@ -98,13 +101,19 @@ usersRouter.route('/:userId')
         res.sendStatus(200);
     })
 
-    // any registered user can retrieve the user record
+    // any registered user can retrieve the user record if they are a member of the same organization
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         User.findById(req.params.userId)
             .then((user) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(user);
+                if (req.user.isAdmin === true || req.user.organizationId === user.organizationId) {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(user);
+                } else {
+                    res.statusCode = 401;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success: false, message: 'Not authorized'});
+                }
             }, (err) => next(err))
             .catch((err) => next(err));
     })
@@ -112,44 +121,72 @@ usersRouter.route('/:userId')
         res.statusCode = 403;
         res.end('POST operation not supported on /users/' + req.params.userId);
     })
+
+    // user records can be changed by the user, the app admin, org-admin and the org-superuser
     .put(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
-        if (req.user.isAdmin === true || req.user._id === req.params.userId) {
-            User.findByIdAndUpdate(req.params.userId, {
-                $set: req.body
-            }, {new: true})
+        if (req.user.isAdmin === true
+            || req.user.userRole === 'org-admin'
+            || req.user.userRole === 'org-superuser'
+            || req.user._id === req.params.userId) {
+            User.findById(req.params.userId)
                 .then((user) => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(user);
+                    if (req.user.organizationId === user.organizationId) {
+                        //TODO: insert logic to ensure that userRole change can only be done by app admins and org-admins
+                        User.findByIdAndUpdate(req.params.userId, {
+                            $set: req.body
+                        }, {new: true})
+                            .then((user) => {
+                                res.statusCode = 200;
+                                res.setHeader('Content-Type', 'application/json');
+                                res.json(user);
+                            }, (err) => next(err))
+                            .catch((err) => next(err));
+                    } else {
+                        res.statusCode = 401;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json({success: false, message: 'Not authorized'});
+                    }
                 }, (err) => next(err))
                 .catch((err) => next(err));
+
         } else {
             res.statusCode = 401;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: false, message: 'Not authorized'});
-            res.end();
         }
     })
 
-    // app admin can delete user by user ID
+    // user records can be deleted by app admin, org-admin and specific user
     .delete(authenticate.verifyUser, cors.corsWithOptions, (req, res, next) => {
-        if (req.user.isAdmin === true || req.user.organizationId ) {
-            User.findByIdAndRemove(req.params.userId)
-                .then((resp) => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(resp);
+        if (req.user.isAdmin === true
+            || req.user.userRole === 'org-admin'
+            || req.user._id === req.params.userId) {
+            User.findById(req.params.userId)
+                .then((user) => {
+                    if (req.user.organizationId === user.organizationId) {
+                        //TODO: insert logic to reassign projects and tasks for deleted users, remove from teams & organizations
+                        User.findByIdAndRemove(req.params.userId)
+                            .then((resp) => {
+                                res.statusCode = 200;
+                                res.setHeader('Content-Type', 'application/json');
+                                res.json(resp);
+                            }, (err) => next(err))
+                            .catch((err) => next(err));
+                    } else {
+                        res.statusCode = 401;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json({success: false, message: 'Not authorized'});
+                    }
                 }, (err) => next(err))
                 .catch((err) => next(err));
+
         } else {
             res.statusCode = 401;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: false, message: 'Not authorized'});
-            res.end();
         }
     })
 ; // end usersRouter v1/users/:userId
-
 
 
 module.exports = usersRouter;
