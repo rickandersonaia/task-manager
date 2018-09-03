@@ -10,7 +10,7 @@ var config = require('./config');
 
 const assert = require('assert');
 const mongoose = require('mongoose');
-mongoose.Promise = require('bluebird');
+mongoose.Promise = require('bluebird');// not currently in use.  This may yet be necessary
 
 var indexRouter = require('./routes/indexRouter');
 var organizationsRouter = require('./routes/organizationsRouter');

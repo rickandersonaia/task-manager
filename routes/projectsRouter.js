@@ -1,10 +1,9 @@
 var express = require('express');
 var projectsRouter = express.Router();
-const mongoose = require('mongoose');
 const cors = require('./cors');
 const Project = require('../models/project');
-const passport = require('passport');
 const authenticate = require('../lib/authenticate');
+const authorize = require('../lib/authorize');
 
 // Get all projects
 // TODO: '/' route, authorization - app admins
@@ -23,6 +22,9 @@ const authenticate = require('../lib/authenticate');
 
 // Delete a specific project
 // TODO: '/:projectId' route, authorization - app admins, org-admin, project owner
+
+// Update (put) add/remove users to a project
+// TODO: '/:projectId/edit-users' route, authorization - app admins, org-admin, project owner (org-superuser)
 
 // Get all projects for a specific organization
 // TODO: '/:organizationId' route, authorization - app admins, org-admin, org-superuser

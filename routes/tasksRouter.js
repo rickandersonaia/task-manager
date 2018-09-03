@@ -3,8 +3,8 @@ var tasksRouter = express.Router();
 const mongoose = require('mongoose');
 const cors = require('./cors');
 const Task = require('../models/task');
-const passport = require('passport');
 const authenticate = require('../lib/authenticate');
+const authorize = require('../lib/authorize');
 
 // Get all tasks - this one is useless, probably should kill this one
 // TODO: '/' route, authorization - app admins
@@ -29,6 +29,12 @@ const authenticate = require('../lib/authenticate');
 
 // Get queried tasks by project
 // TODO: '/:projectId?completed=true' route, authorization - app admins, org-admin, project owner (org-superuser), project team members
+
+// Get tasks by team
+// TODO: '/:teamId' route, authorization - app admins, org-admin, project owner (org-superuser), project team members
+
+// Get queried tasks by team
+// TODO: '/:teamId?completed=true' route, authorization - app admins, org-admin, project owner (org-superuser), project team members
 
 // Get tasks by user
 // TODO: '/:userId' route, authorization - app admins, org-admin, project owner (org-superuser), project team members

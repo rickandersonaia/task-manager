@@ -8,7 +8,7 @@ var attachmentsRouter = express.Router();
 // TODO: '/new' route, authorization - verified user
 
 // Post a new attachment
-// TODO: '/new' route, authorization - project team members
+// TODO: '/new' route, authorization - project owner (member-superuser), project team members
 
 // Get a specific attachment
 // TODO: '/:attachmentId', authorization - app admins, project owner (member-superuser), project team members
