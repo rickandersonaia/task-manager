@@ -158,7 +158,6 @@ organizationsRouter.route('/:organizationId')
     .get(authenticate.verifyUser, cors.cors, (req, res, next) => {
         Organization.findById(req.params.organizationId)
             .then(organization => {
-                console.log('orgaini: ', organization);
                 if (authorize.hasOrgUserPrivilege(req.user, organization) === true) {
                     console.log('hasOrgUserPrivilege has returned true');
                     res.statusCode = 200;

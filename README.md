@@ -114,14 +114,10 @@ I think I mostly hit it.
  I think I nailed this one.  The system I imagined, the structure of the project and the
  code that I wrote all reflect a complex design.
 * **We want to see creativity, use of tools such as Typescript and unit-testing frameworks -** 
- I feel good about the creativity part but I've never used Typescript with Node, only 
+ I feel good about the creativity part but I've never used Typescript with Node, only with
  Angular. So I chose to show you what I really can do, rather than something I would
- have to learn real quick.  I intended to use Mocha and Chai for unit testing, but there
- is very little unit testing available on the project so far.  Almost all of the functionality 
- in the app so far involves CRUD operations.  For that I would need to use integration
- testing and I've never done that. Nor have I had the chance to teach myself that.  To be sure
- I tested the heck out of it in Postman, but I don't think that counts here.  I am confident that
- I can learn these skills, especially as part of a team wher I can be shown how you use them.
+ have to learn real quick.  I used Mocha and Chai for unit testing. I wrote 18 unit tests
+  for the authorization rules.  
  * **well-structured code, and attention to maintainability -**  I think I did fine on this.
  This seems to be a typical arrangement for a Node based web API.  Nothing fancy or creative here.
  
