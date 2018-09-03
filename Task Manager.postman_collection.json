@@ -1,0 +1,442 @@
+{
+	"info": {
+		"_postman_id": "da6ed0c4-52d1-4a71-86d6-04f1aadf7613",
+		"name": "Task Manager",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:3000/signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"username\": \"byobrick\",\n\"email\": \"rick@byobwebsite.com\",\n\"password\": \"password\",\n\"displayName\": \"Rick Anderson\",\n\"userRole\": \"admin\",\n\"isAdmin\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"username\": \"byobrick\",\n\t\"password\": \"password\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"username\": \"byobrick\",\n\"email\": \"rick@byobwebsite.com\",\n\"password\": \"password\",\n\"displayName\": \"Rick Anderson\",\n\"userRole\": \"admin\",\n\"isAdmin\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "signup Copy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"username\": \"byobrick\",\n\"email\": \"rick@byobwebsite.com\",\n\"password\": \"password\",\n\"displayName\": \"Rick Anderson\",\n\"userRole\": \"admin\",\n\"isAdmin\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user/",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Yjg4NmUyNGE4MWExNjQ4ZDgwZGQ5MmEiLCJpYXQiOjE1MzU2Njg5NDMsImV4cCI6MTUzNTY5MDU0M30.FyRGnaRrPkNL9pdBxPvlTOURSA6drha8elhwNc5_Zxw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"username\": \"byobrick\",\n\"email\": \"rick@byobwebsite.com\",\n\"password\": \"password\",\n\"displayName\": \"Rick Anderson\",\n\"userRole\": \"admin\",\n\"isAdmin\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user/ Copy",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Yjg4NmUyNGE4MWExNjQ4ZDgwZGQ5MmEiLCJpYXQiOjE1MzU2Njg5NDMsImV4cCI6MTUzNTY5MDU0M30.FyRGnaRrPkNL9pdBxPvlTOURSA6drha8elhwNc5_Zxw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"username\": \"byobrick\",\n\"email\": \"rick@byobwebsite.com\",\n\"password\": \"password\",\n\"displayName\": \"Rick Anderson\",\n\"userRole\": \"admin\",\n\"isAdmin\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "new/",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Yjg4NmUyNGE4MWExNjQ4ZDgwZGQ5MmEiLCJpYXQiOjE1MzU2Njg5NDMsImV4cCI6MTUzNTY5MDU0M30.FyRGnaRrPkNL9pdBxPvlTOURSA6drha8elhwNc5_Zxw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"username\": \"byobrick\",\n\"email\": \"rick@byobwebsite.com\",\n\"password\": \"password\",\n\"displayName\": \"Rick Anderson\",\n\"userRole\": \"admin\",\n\"isAdmin\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/organization",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Yjg5OGU2OWU2YTU0MzJjNzg2ZWMxN2QiLCJpYXQiOjE1MzU3NDg3OTcsImV4cCI6MTUzNTc3MDM5N30.M868XOSV0iTOiPJ9RUTb8JS3B43QyC__cS11vnSs5_4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"username\": \"byobrick\",\n\"email\": \"rick@byobwebsite.com\",\n\"password\": \"password\",\n\"displayName\": \"Rick Anderson\",\n\"userRole\": \"admin\",\n\"isAdmin\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/v1/organization",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"organization"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/organization/new",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Yjg5OGU2OWU2YTU0MzJjNzg2ZWMxN2QiLCJpYXQiOjE1MzU3NDg3OTcsImV4cCI6MTUzNTc3MDM5N30.M868XOSV0iTOiPJ9RUTb8JS3B43QyC__cS11vnSs5_4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"name\": \"Wealth Hunters\",\n\"description\": \"A test organization\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/v1/organization/new",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"organization",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/organization/ID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Yjg5OGU2OWU2YTU0MzJjNzg2ZWMxN2QiLCJpYXQiOjE1MzU3NDg3OTcsImV4cCI6MTUzNTc3MDM5N30.M868XOSV0iTOiPJ9RUTb8JS3B43QyC__cS11vnSs5_4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"username\": \"byobrick\",\n\"email\": \"rick@byobwebsite.com\",\n\"password\": \"password\",\n\"displayName\": \"Rick Anderson\",\n\"userRole\": \"admin\",\n\"isAdmin\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/v1/organization/5b89b197e23f7a29ecc288ac",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"organization",
+						"5b89b197e23f7a29ecc288ac"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/first-admin",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"username\": \"byobrick\",\n\"email\": \"rick@byobwebsite.com\",\n\"password\": \"password\",\n\"displayName\": \"Rick Anderson\",\n\"userRole\": \"admin\",\n\"isAdmin\": true\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/first-admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"first-admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/v1/organization/new/initialize",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1Yjg5OGU2OWU2YTU0MzJjNzg2ZWMxN2QiLCJpYXQiOjE1MzU4MjM3NzUsImV4cCI6MTUzNTg0NTM3NX0.0rhVf5oCz5cYp4MtAotOEvlJ5H5xo9e4w5ETYtZdtyU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"username\": \"billy\",\n\"email\": \"bill@byobwebsite.com\",\n\"password\": \"password\",\n\"displayName\": \"Billy Bob\",\n\"userRole\": \"org-superuser\",\n\"isAdmin\": false,\n\"organizationId\": \"5b89b197e23f7a29ecc288ac\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/v1/user/new",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"v1",
+						"user",
+						"new"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/logout",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/logout",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -68,3 +68,73 @@ a task or a project.
 
 The permission system described above controls who can access, create, edit and delete
 the project components.
+
+## How far did I get?
+
+**Data Models -** I created data models for Users, Organizations, Projects, Teams, Tasks 
+and Attachments.
+
+**Authentication System -** I created and implemented a user authentication system
+that relies on the uses in the database and passes security tokens back and forth.
+
+**User Registration -** I created a user registration system that allows for 3 seperate 
+conditions:
+* Starting the app for the first time and creating the initial admin user.
+* Creating a new organization and organization admin user.
+* The typical signup procedure for everyone else.
+
+**Routes -** I have laid out all of the routes and their permission systems. I have
+implemented a CORs system on all routes.  I have finalized routes for: 
+* indexRouter
+* organizationsRouter 
+* usersRouter.  
+
+Completed endpoints are:
+* `/`
+* `/first-admin`
+* `/signup`
+* `/login`
+* `/logout` - is only useful to the front end
+* `/checkJWTToken` - for testing
+* `/duplicate-check?query` - for front end testing
+* `/v1/organization/`
+* `/v1/organization/new`
+* `/v1/organization/new/initialize`
+* `/v1/organization/:organizationId`
+* `/v1/user/`
+* `/v1/user/new`
+* `/v1/user/:userId`
+
+**Authorization -** I have created much of the roll base authorization system.  
+This includes all authorization for the routes that are completed.
+
+## Did I hit the target?
+I think I mostly hit it.
+
+* **The goal is to show how you would design something that can be very complex -**
+ I think I nailed this one.  The system I imagined, the structure of the project and the
+ code that I wrote all reflect a complex design.
+* **We want to see creativity, use of tools such as Typescript and unit-testing frameworks -** 
+ I feel good about the creativity part but I've never used Typescript with Node, only 
+ Angular. So I chose to show you what I really can do, as opposed to something I would
+ have to learn real quick.  I intended to use Mocha and Chai for unit testing, but there
+ is very little unit testing available on the project so far.  Almost all of the functionality 
+ in the app so far involves CRUD operations.  For that I would need to use integration
+ testing and I've never done that. Nor have I had the chance to teach myself that.  To be sure
+ I tested the heck out of it in Postman, but I don't think that counts here.  I am confident that
+ I can learn these skills, especially as part of a team wher I can be shown how you use them.
+ * **well-structured code, and attention to maintainability -**  I think I did fine on this.
+ This seems to be a typical arrangement for a Node based web api.  Nothing fancy or creative here.
+ 
+ #Setting it up
+ 1. Clone the repository
+ 2. Install package.json
+ 3. Create a database and a user with full priveleges
+ 4. Change the config.js to reflect that database connection string
+ 5. Start the app - `set DEBUG=app:* & npm start`
+ 6. In Postman create your initial app admin user at `/first-admin`.  I suggest importing
+ the Task Manager.postman_collection.json file into Postman.  It has all of the formats for 
+ creating users and projects.
+ 7. In Postman create your first client organization and org-admin user.  Do that
+ at `/v1/organization/new/initialize`.
+ 
